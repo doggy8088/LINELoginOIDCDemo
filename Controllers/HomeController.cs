@@ -1,6 +1,9 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using LINELoginOIDCDemo.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace LINELoginOIDCDemo.Controllers;
 
@@ -13,6 +16,7 @@ public class HomeController : Controller
         _logger = logger;
     }
 
+    [AllowAnonymous]
     public IActionResult Index()
     {
         return View();
@@ -21,6 +25,13 @@ public class HomeController : Controller
     public IActionResult Privacy()
     {
         return View();
+    }
+
+    [AllowAnonymous]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return RedirectToAction(nameof(Index));
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
