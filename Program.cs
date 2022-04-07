@@ -23,6 +23,14 @@ builder.Services.AddAuthentication(options =>
         options.Scope.Add("openid");
         options.Scope.Add("profile");
 
+        options.Events = new OpenIdConnectEvents()
+        {
+            OnAuthorizationCodeReceived	 = context => {
+                context.TokenEndpointRequest?.SetParameter("id_token_key_type", "JWK");
+                return Task.CompletedTask;
+            }
+        };
+
         options.SaveTokens = true;
     });
 
